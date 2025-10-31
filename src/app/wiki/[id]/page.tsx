@@ -1,4 +1,5 @@
 import WikiArticleViewer from "@/components/wiki-article-viewer";
+import { stackServerApp } from "@/stack/server";
 
 interface ViewArticlePageProps {
   params: Promise<{
@@ -9,6 +10,7 @@ interface ViewArticlePageProps {
 export default async function ViewArticlePage({
   params,
 }: ViewArticlePageProps) {
+  await stackServerApp.getUser({ or: "redirect" });
   const { id } = await params;
 
   // Mock permission check - in a real app, this would come from auth/user context

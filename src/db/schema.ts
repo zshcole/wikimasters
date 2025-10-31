@@ -15,7 +15,6 @@ export const articles = pgTable("articles", {
   updateAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
 });
 
-
 const schema = { articles };
 export default schema;
 

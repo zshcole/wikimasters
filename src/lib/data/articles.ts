@@ -27,15 +27,16 @@ export async function getArticles() {
  * @returns Promise resolving to the article object or null if not found.
  */
 export async function getArticleById(id: number) {
-  const response = await db.select({
-    id: articles.id,
-    title: articles.title,
-    content: articles.content,
-    author: usersSync.name,
-    imageUrl: articles.imageUrl
-  })
-  .from(articles)
-  .where(eq(articles.id, id))
-  .leftJoin(usersSync, eq(articles.authorId, usersSync.id));
-  return response[0] ? response[0] : null
+  const response = await db
+    .select({
+      id: articles.id,
+      title: articles.title,
+      content: articles.content,
+      author: usersSync.name,
+      imageUrl: articles.imageUrl,
+    })
+    .from(articles)
+    .where(eq(articles.id, id))
+    .leftJoin(usersSync, eq(articles.authorId, usersSync.id));
+  return response[0] ? response[0] : null;
 }

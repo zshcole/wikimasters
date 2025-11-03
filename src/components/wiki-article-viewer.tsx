@@ -12,9 +12,9 @@ interface Article {
   id: string;
   title: string;
   content: string;
-  author: string;
+  author: string | null;
   createdAt: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
 }
 
 interface WikiArticleViewerProps {

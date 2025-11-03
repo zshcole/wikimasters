@@ -2,8 +2,10 @@
 
 import MDEditor from "@uiw/react-md-editor";
 import { Upload, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
+import { createArticle, updateArticle } from "@/app/actions/articles";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,14 +16,8 @@ interface WikiEditorProps {
   initialContent?: string;
   isEditing?: boolean;
   articleId?: string;
+  userId?: string;
 }
-
-interface FormData {
-  title: string;
-  content: string;
-  files: File[];
-}
-
 interface FormErrors {
   title?: string;
   content?: string;
@@ -32,12 +28,14 @@ export default function WikiEditor({
   initialContent = "",
   isEditing = false,
   articleId,
+  userId = "user-1",
 }: WikiEditorProps) {
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [files, setFiles] = useState<File[]>([]);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   // Validate form
   const validateForm = (): boolean => {
@@ -79,41 +77,43 @@ export default function WikiEditor({
 
     setIsSubmitting(true);
 
-    const formData: FormData = {
-      title: title.trim(),
-      content: content.trim(),
-      files,
-    };
+    try {
+      let imageUrl: string | undefined;
 
-    // Log the form data (as requested - no actual API calls)
-    console.log("Form submitted:", {
-      action: isEditing ? "edit" : "create",
-      articleId: isEditing ? articleId : undefined,
-      data: formData,
-    });
+      const payload = {
+        title: title.trim(),
+        content: content.trim(),
+        authorId: userId,
+        imageUrl,
+      };
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setIsSubmitting(false);
-
-    // In a real app, you would navigate after successful submission
-    alert(
-      `Article ${
-        isEditing ? "updated" : "created"
-      } successfully! Check console for form data.`,
-    );
+      if (isEditing && articleId) {
+        await updateArticle(articleId, payload);
+        router.push(`/wiki/${articleId}`);
+      } else {
+        const result = await createArticle(payload);
+        if (result.id) {
+          router.push(`/wiki/${result.id}`);
+        } else {
+          router.push("/");
+        }
+      }
+    } catch (e) {
+      console.error(`Error`, e);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Handle cancel
   const handleCancel = () => {
     // In a real app, you would navigate back
     const shouldLeave = window.confirm(
-      "Are you sure you want to cancel? Any unsaved changes will be lost.",
+      "Are you sure you want to cancel? Any unsaved changes will be lost."
     );
     if (shouldLeave) {
       console.log("User cancelled editing");
-      // navigation logic would go here
+      router.push("/");
     }
   };
 

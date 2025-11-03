@@ -1,9 +1,10 @@
 "use server";
 
+import { eq } from "drizzle-orm";
+import { authorizeUserToEditArticle } from "@/db/authz";
+import db from "@/db/index";
+import { articles } from "@/db/schema";
 import { stackServerApp } from "@/stack/server";
-
-// Server actions for articles (stubs)
-// TODO: Replace with real database operations when ready
 
 export type CreateArticleInput = {
   title: string;
@@ -19,34 +20,60 @@ export type UpdateArticleInput = {
 };
 
 export async function createArticle(data: CreateArticleInput) {
-  const user = stackServerApp.getUser();
+  const user = await stackServerApp.getUser();
   if (!user) {
     throw new Error("❌ Unauthorized");
   }
 
-  // TODO: Replace with actual database call
-  console.log("✨ createArticle called:", data);
-  return { success: true, message: "Article create logged (stub)" };
+  const response = await db
+    .insert(articles)
+    .values({
+      title: data.title,
+      content: data.content,
+      authorId: data.authorId,
+      imageUrl: data.imageUrl,
+      published: true,
+      slug: `${Date.now()}`,
+    })
+    .returning({ id: articles.id });
+  const articleId = response[0]?.id;
+  return { success: true, message: "Article create logged", id: articleId };
 }
 
 export async function updateArticle(id: string, data: UpdateArticleInput) {
-  const user = stackServerApp.getUser();
+  const user = await stackServerApp.getUser();
   if (!user) {
     throw new Error("❌ Unauthorized");
   }
 
-  // TODO: Replace with actual database update
-  console.log("📝 updateArticle called:", { id, ...data });
+  if (!(await authorizeUserToEditArticle(user.id, +id))) {
+    throw new Error("❌ Forbidden");
+  }
+
+  try {
+    await db
+      .update(articles)
+      .set({
+        title: data.title,
+        content: data.content,
+      })
+      .where(eq(articles.id, +id));
+  } catch (e) {
+    console.error("insertion error", e);
+    // send this to observability platform (grafana, loki, promethues)
+  }
   return { success: true, message: `Article ${id} update logged (stub)` };
 }
 
 export async function deleteArticle(id: string) {
-  const user = stackServerApp.getUser();
+  const user = await stackServerApp.getUser();
   if (!user) {
     throw new Error("❌ Unauthorized");
   }
 
-  // TODO: Replace with actual database delete
-  console.log("🗑️ deleteArticle called:", id);
+  if (!(await authorizeUserToEditArticle(user.id, +id))) {
+    throw new Error("❌ Forbidden");
+  }
+  await db.delete(articles).where(eq(articles.id, +id));
   return { success: true, message: `Article ${id} delete logged (stub)` };
 }

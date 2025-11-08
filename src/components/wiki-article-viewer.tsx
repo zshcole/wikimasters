@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface Article {
-  id: number;
+  id: string;
   title: string;
   content: string;
   author: string | null;

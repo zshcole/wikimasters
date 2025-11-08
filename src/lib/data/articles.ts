@@ -34,6 +34,7 @@ export async function getArticleById(id: number) {
       content: articles.content,
       author: usersSync.name,
       imageUrl: articles.imageUrl,
+      createdAt: articles.createdAt,
     })
     .from(articles)
     .where(eq(articles.id, id))

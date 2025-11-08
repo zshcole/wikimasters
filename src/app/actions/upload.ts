@@ -46,7 +46,7 @@ export async function uploadFile(formData: FormData): Promise<UploadedFile> {
       addRandomSuffix: true,
     });
 
-    type VercelBlobResult = { url?: string; pathname?: string; }
+    type VercelBlobResult = { url?: string; pathname?: string };
     const blobResult = blob as VercelBlobResult;
 
     return {

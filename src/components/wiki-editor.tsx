@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { createArticle, updateArticle } from "@/app/actions/articles";
+import { uploadFile } from "@/app/actions/upload";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -79,6 +80,13 @@ export default function WikiEditor({
 
     try {
       let imageUrl: string | undefined;
+      // If there's at least one file, upload the first one via server action
+      if (files.length > 0) {
+        const fd = new FormData();
+        fd.append("files", files[0]);
+        const uploaded = await uploadFile(fd);
+        imageUrl = uploaded?.url;
+      }
 
       const payload = {
         title: title.trim(),

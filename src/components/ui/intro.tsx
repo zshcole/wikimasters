@@ -6,7 +6,8 @@ export function Intro() {
         {CMS_NAME}.
       </h1>
       <h4 className="text-center md:text-left text-lg mt-5 md:pl-8">
-        whether you write daily or once a year, {CMS_NAME} is your home.
+        whether you write daily or once a year, <strong>{CMS_NAME}</strong> is
+        your home.
       </h4>
     </section>
   );

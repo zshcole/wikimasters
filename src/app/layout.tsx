@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Wikimasters",
-  description: "Blog application",
+  title: "beacon",
+  description: "beacon is your home.",
 };
 
 export default function RootLayout({

@@ -7,6 +7,7 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { stackServerApp } from "@/stack/server";
+import { CMS_NAME } from "../../lib/constants";
 
 export async function NavBar() {
   const user = await stackServerApp.getUser();
@@ -18,7 +19,8 @@ export async function NavBar() {
             href="/"
             className="font-bold text-xl tracking-tight text-gray-900"
           >
-            Wikimasters
+            {CMS_NAME}
+            <span className="live-indicator"></span>
           </Link>
         </div>
         <NavigationMenu>

@@ -19,7 +19,8 @@ export async function NavBar() {
             href="/"
             className="font-bold text-xl tracking-tight text-gray-900"
           >
-            {CMS_NAME}.
+            {CMS_NAME}
+            <span className="live-indicator"></span>
           </Link>
         </div>
         <NavigationMenu>

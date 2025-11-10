@@ -1,4 +1,4 @@
-import { HeroImage } from "./ui/hero-image";
+import { CoverImage } from "./ui/cover-image";
 import { Intro } from "./ui/intro";
 
 export function LandingPage() {
@@ -6,7 +6,7 @@ export function LandingPage() {
     <div>
       <Intro />
       <div className="mb-8 md:mb-16">
-        <HeroImage title={"cover"} src={"/"} />
+        <CoverImage />
       </div>
     </div>
   );

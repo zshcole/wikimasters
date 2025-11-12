@@ -2,7 +2,7 @@ import { StackProvider, StackTheme } from "@stackframe/stack";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NavBar } from "@/components/nav/nav-bar";
-import { stackClientApp } from "../stack/client";
+import { stackServerApp } from "../stack/server";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,7 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <StackProvider app={stackClientApp}>
+        <StackProvider app={stackServerApp}>
           <StackTheme>
             <NavBar />
             {children}
